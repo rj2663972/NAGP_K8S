@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sampleapi-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sampleapi
+  template:
+    metadata:
+      labels:
+        app: sampleapi
+    spec:
+      containers:
+      - name: sampleapi
+        image: rj2663972/sampleapi:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: DB_SERVERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: servername
+        - name: DB_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: database
+        - name: DB_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: password
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "500m"
+        memory: "256Mi"

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sqlserver
+spec:
+  serviceName: "sqlserver"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sqlserver
+  template:
+    metadata:
+      labels:
+        app: sqlserver
+    spec:
+      terminationGracePeriodSeconds: 10
+      initContainers:
+      - name: init-permissions
+        image: busybox
+        command: ['sh', '-c', 'chown -R 10001:0 /var/opt/mssql']
+        volumeMounts:
+        - name: sqlserver-storage
+          mountPath: /var/opt/mssql
+      containers:
+      - name: sqlserver
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        ports:
+        - containerPort: 1433
+          name: sql
+        env:
+        - name: MSSQL_PID
+          value: "Developer"
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sqlserver-secret
+              key: sa-password
+        - name: MSSQL_DB
+          valueFrom:
+            configMapKeyRef:
+              name: sqlserver-config
+              key: SQLSERVER_DATABASE
+        volumeMounts:
+        - name: sqlserver-storage
+          mountPath: /var/opt/mssql
+  volumeClaimTemplates:
+  - metadata:
+      name: sqlserver-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi

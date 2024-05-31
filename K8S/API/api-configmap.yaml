@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+data:
+  servername: "sqlserver-0.sqlserver"
+  database: "SampleDB"
+  username: "SA"
