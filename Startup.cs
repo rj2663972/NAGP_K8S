@@ -36,6 +36,7 @@ namespace TODO
                 opt.UseSqlServer(connectionString));
 
             services.AddControllers();
+            services.AddHealthChecks();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My Sample API", Version = "V1" });
@@ -62,6 +63,9 @@ namespace TODO
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                // Map health check endpoints
+                endpoints.MapHealthChecks("/healthz");  // Liveness probe
+                endpoints.MapHealthChecks("/readiness");  // Readiness probe
             });
 
             PrepDb.PrepPopulation(app, _env.IsProduction());
