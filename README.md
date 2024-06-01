@@ -1,4 +1,4 @@
-NAGP_K8S Assignment.
+RAHUL_JAIN_3171275_Kubernetes & DevOps Advanced
 
 1. Source Code GitURL: https://github.com/rj2663972/NAGP_K8S/tree/master
 
