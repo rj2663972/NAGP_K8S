@@ -48,5 +48,13 @@ namespace TODO.Controllers
             }
             return Ok(user);
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete()
+        {
+            _context.Users.RemoveRange(_context.Users);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
     }
 }

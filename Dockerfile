@@ -5,7 +5,7 @@ COPY *.csproj ./
 RUN dotnet restore
 
 COPY . ./
-RUN dotnet publish -c Release -o out
+RUN dotnet publish NAGP_K8S.sln -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0
 WORKDIR /app
